@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <script> 
+      // // Testing basic "Module" pattern
+      // function car(make) {
+      //   return {
+      //     get: () => {
+      //       console.log(make);
+      //     },
+      //     setBrand: (newMake) => {
+      //       make = newMake;
+      //     },
+      //   }
+      // };
+      // 
+      // var ms1 = car('Maserati');
+      // 
+      // ms1.get();
+      // ms1.setBrand('Koenigsegg');
+      // ms1.get();
+      // 
+      // // creating a new reference creates new environemnt ==> new context
+      //   // same code but different execution context
+      //   // ms1 is totally separate from ms2
+      // var ms2 = car('Aston Martin');
+      // ms2.get();
+      // ms1.get();
+      
+      // Import Mixins with "Module" pattern (Rename and localize global variables )
+      const testObject = {
+        html: (document) => {
+          console.log(document);
+        }, 
+        otherMethod: () => {
+          console.log('other method');
+        },
+      };
+      
+      const someModule = ((tObj, doc) => {
+        let privVar = 0;
+        
+        const privateMethod = (increment) => {
+          if (increment)
+            privVar += increment;
+          else 
+            privVar++;
+        };
+        
+        return {
+          addCounter: (increment) => {
+            privateMethod(increment);
+          },
+          getCounter: () => {
+            console.log(privVar);
+          },
+          getDoc: () => {
+            return tObj.html(doc);
+          }
+        };
+      })(testObject, document);
+      
+      someModule.getCounter();
+      someModule.addCounter(3);
+      someModule.getCounter();
+      someModule.getDoc();
+      
+    </script>
+  </body>
+</html>

@@ -1,0 +1,654 @@
+<!DOCTYPE htrowLength>
+<htrowLength>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <p id="content">
+      Error Link takes a function that is called in the event of an error. This function is called with an object containing the following keys: errors.
+    </p>
+    <span id="result"></span>
+    <script>
+      // Instructions
+        // 1. Find string matches in paragraph element
+      const sentence = document.getElementById('content').innerText;
+      const resultElem = document.getElementById('result');
+      const testStringArray = ['error'];
+      /*
+      * Accepts array of strings to search for and outputs number count
+      * @params {Array} of strings ['Age', 'Age of Man', 'error']
+      */
+      function findStrings(stringArray) {
+        let counter = 0;
+        let stringArrayLength = stringArray.length;
+        for (;counter < stringArrayLength;) {
+          findStringCount(stringArray[counter]);
+          counter++;
+        }
+      }
+
+      /*
+      * Searches p#content for single string
+      * @params {String}
+      */
+      function findStringCount(searchStr) {
+        let stringCount = 0;
+        const stringFormatted = searchStr.toLowerCase();
+        const stringLength = searchStr.length;
+        const firstLetter = stringFormatted[0];
+
+        let sentenceCount = 0;
+        const sentenceLength = sentence.length;
+
+        // do actual search
+        // loop through each letter
+        // Starting from the first letter, each time letter matches in the string, save reference to index
+        // Then from each of those indexes, see if following word it builds matches
+        // If matches (until searchStr length runs out) ==> stringCount ++
+        // If doesn't match halfway, discard
+
+        let beginIndexes = [];
+        for (;sentenceCount < sentenceLength;) {
+          if (sentence[sentenceCount].toLowerCase() === firstLetter)
+            beginIndexes.push(sentenceCount);
+
+          sentenceCount++;
+        }
+
+        // loop through firstLetter match indexes and build out words while matching
+        let bCounter = 0;
+        // let beginIndexesLength = beginIndexes.length;
+        for (;bCounter < beginIndexes.length;) {
+          if (beginIndexes[bCounter] + stringLength > stringLength) {
+            beginIndexes = beginIndexes.splice(0, bCounter);
+          }
+          bCounter++;
+        }
+      }
+
+      findStrings(testStringArray);
+    </script>
+    <script>
+      // Instructions: Flatten deep array
+    </script>
+    <script>
+      // Instructions: Given 2 already sorted arrays, and array A has enough buffer to hold array B,
+      // merge them in sorted order
+
+      // const arr1 = [1,2,3,4];
+      // const arr1 = [1,2,3];
+      const arr1 = [];
+      const arr2 = ['a', 'b', 'c', 'd'];
+      // const arr2 = ['a', 'b', 'c'];
+
+      function mergeArrays(arr1, arr2) {
+        const arr1Length = arr1.length;
+        const arr2Length = arr2.length;
+        let c1 = 0;
+        let c2 = 0;
+
+        // If arr2 is empty
+        if (!arr2Length) {
+          return arr1;
+        }
+
+        // Both arr1 and arr2 have length
+          // any array might have leftovers
+        for (;c2 < arr2Length;) {
+          if (c1 < arr1Length) {
+            arr1.splice((c2 * 2) + 1, 0, arr2[c2]);
+            c1++;
+          } else {
+            arr1[arr1.length] = arr2[c2];
+          }
+          c2++;
+        }
+
+        return arr1;
+      }
+
+      mergeArrays(arr1, arr2);
+
+      // console.log(arr1);
+    </script>
+    <script>
+      // Instructions: Sort array so that all anagrams are next to each other
+
+      const testAnaList = ['aba', 'kok', 'zzz', 'yyy', 'okk', 'baa', 'aab', 'kko'];
+
+      function sortAnaList(arr) {
+        const anaMap = {};
+        const anaList = [];
+        const newArr = [];
+        const arrL = arr.length;
+        let c = 0;
+        let c1 = 0; // unique counter
+
+        for (;c < arrL;) {
+          const item = arr[c];
+          const itemSorted = item.split('').sort();
+
+          if (anaMap[itemSorted] === undefined) {
+            anaMap[itemSorted] = {
+              lastIndex: c1,
+            };
+            anaList[c1] = [item];
+            c1++;
+          } else {
+            const lastUniqueIndex = anaMap[itemSorted].lastIndex;
+            const holdingArray = anaList[lastUniqueIndex];
+
+            holdingArray[holdingArray.length] = item;
+          }
+          c++;
+        }
+
+        const anaListL = anaList.length;
+        let c2 = 0;
+
+        for (;c2 < anaListL;) {
+          const holdingItem = anaList[c2];
+          const holdingIterowLength = holdingItem.length;
+          let c3 = 0;
+
+          for (;c3 < holdingIterowLength;) {
+            newArr[newArr.length] = holdingItem[c3];
+            c3++;
+          }
+          c2++;
+        }
+
+        return newArr;
+      }
+
+      // console.log(sortAnaList(testAnaList));
+    </script>
+    <script>
+      // binary search
+      const binArr = ['at', '', '', '', '', '', '', 'bar', '', 'c'];
+
+      function performBinSearch(arr, val, low, high) {
+
+        let startMid = Math.floor((low + high)/2); // startMidpnt
+        let compVal = startMid;
+
+        // Find actual value to compare with, since a lot of empty strings to wade through
+        while (compVal) {
+          if (arr[compVal]) {
+            break;
+          }
+          compVal--;
+        }
+
+        if (arr[compVal] < val) {
+          return performBinSearch(arr, val, startMid + 1, high);
+        } else if (arr[compVal] > val) {
+          return performBinSearch(arr, val, low, startMid - 1);
+        } else {
+          // match
+          return compVal;
+        }
+      }
+
+      // console.log(performBinSearch(binArr, 'c', 0, binArr.length));
+    </script>
+    <script>
+      // Instructions: find element from a matrix where you know # columns and # rows
+      const matrixArr = [
+        [1, 2, 3, 4, 5],
+        [6, 7, 8, 9, 10],
+        [11, 12, 13, 14, 15],
+      ];
+      let res = { row: null, col: null }; // row: which subArray, col: index inside subArray
+
+      function searchInMatrix(matrix, val, low, high) {
+        // find row // and then find col
+        if (low > high) {
+          return;
+        }
+
+        const mid = Math.floor((low + high) / 2);
+        const subArray = matrix[mid];
+        const subArrayEndIndex = subArray.length - 1;
+        const subArrayStart = subArray[0];
+        const subArrayEnd = subArray[subArrayEndIndex];
+
+        if (subArrayStart < val) {
+          if (subArrayEnd < val) {
+            searchInMatrix(matrix, val, mid + 1, high);
+          } else if (subArrayEnd > val) {
+            res.row = mid;
+            res.col = searchSubArray(subArray, val, 1, subArrayEndIndex - 1); // find column
+          } else {
+            res.row = mid;
+            res.col = subArrayEndIndex;
+          }
+        } else if (subArrayStart > val) {
+          searchInMatrix(matrix, val, 0, mid - 1);
+        } else {
+          res.row = mid;
+        }
+      }
+
+      function searchSubArray(subArray, val, low, high) {
+        if (low > high) {
+          return;
+        }
+
+        const mid = Math.floor((low + high) / 2);
+        const compVal = subArray[mid];
+
+        if (compVal < val) {
+          return searchSubArray(subArray, val, mid + 1, high);
+        } else if (compVal > val) {
+          return searchSubArray(subArray, val, 0, mid - 1);
+        } else {
+          return mid;
+        }
+      }
+
+      searchInMatrix(matrixArr, 14, 0, matrixArr.length);
+      // console.log(res);
+    </script>
+    <script>
+      // Instructions: Building a circus tower: Max # of people given the heights + weights of each person
+      const circusInput = [
+        [65, 100], // height // weight
+        [70, 150],
+        [56, 90],
+        [75, 190],
+        [65, 95],
+        [68, 110],
+      ];
+      const circusOutput = [
+        [56, 90],
+        [60, 95],
+        [65, 100],
+        [68, 110],
+        [70, 150],
+        [75, 190],
+      ];
+
+      function calcPeople(arr) {
+        const arrCopy = arr.slice();
+        const weightMap = {};
+        let bestSequence = null;
+
+        // Sort by height. Array is also now in Weight-ascending order
+        arrCopy.sort((a, b) => {
+          if (a[0] < b[0]) {
+            return -1;
+          } else if (a[0] < b[0]) {
+            return 1;
+          } else {
+            if (a[1] < b[1]) {
+              return -1;
+            } else {
+              return 1;
+            }
+          }
+        });
+
+        let c = 0;
+        //
+        // for (;c < arrCopy.length;) {
+        //
+        //   c++;
+        // }
+      }
+
+      // console.log(calcPeople(circusInput));
+    </script>
+    <script>
+      // Look up rank of number
+      const testInput = [3, 1, 2, 5, 3, 1, 8, 2];
+
+      const doStuffToNumber = (arr) => {
+        // track
+      }
+
+      function track(num) {
+
+      }
+
+      function getRankOfNumber(num) {
+
+      }
+    </script>
+    <script>
+      // Palindrome #1
+      function isPalindrome(str1, str2) {
+        if (str1.length !== str2.length) {
+          return false;
+        }
+
+        const str1L = str1.length;
+        let c1 = 0;
+        let c2 = str1L - 1;
+
+        while (c1 < str1L) {
+          if (str1[c1] !== str2[c2]) return false;
+
+          c1++;
+          c2--;
+        }
+
+        return true;
+      }
+
+      // console.log(isPalindrome('mailmal', 'narowLengthiam'));
+
+      // Palindrome #2 (btw elements in an array)
+      function arePalindromes(arr) {
+
+      }
+
+      const palArr = ['mailman', 'narowLengthiam', 'larowLengthiam'];
+      // console.log(arePalindromes());
+    </script>
+    <script>
+      // unique characters in a string
+      function hasUniqChars(str) {
+        if (str.length > 255) return false;
+
+        const refArr = new Array(255);
+        const strL = str.length;
+        let c = 0;
+
+        while (c < strL) {
+          const codeInd = str.charCodeAt(c);
+
+          if (refArr[codeInd]) return false;
+
+          refArr[codeInd] = 1;
+          c++;
+        }
+
+        return true;
+      }
+
+      // console.log(hasUniqChars('tomy'));
+    </script>
+    <script>
+      // Implement the "reverse" method
+      function reverseStr(str) {
+        const strLength = str.length;
+        const end = strLength - 1;
+        const strArr = new Array(strLength);
+        let c = 0;
+
+        while (c < strLength) {
+          strArr[c] = str[end - c];
+          c++;
+        }
+
+        return strArr.join('');
+      }
+
+      const testStr = 'helloWorld';
+      // console.log(reverseStr(testStr));
+    </script>
+    <script>
+      // Anagram
+      // Big O(2N)
+      // Big C(1)
+      function isAna(str1, str2) {
+        if (str1.length !== str2.length) return false;
+
+        const map1 = new Map();
+        const strLength = str1.length;
+        let c1 = 0;
+        let c2 = 0;
+
+        // Build up the char map with str1 (hash table)
+        for (;c1 < strLength;) {
+          const letter = str1[c1];
+          const letterCount = map1.get(letter);
+          const newCount = letterCount ? letterCount + 1 : 1;
+
+          map1.set(letter, newCount);
+
+          c1++;
+        }
+
+        // Compare against char map and normalize char map with str2
+        for (;c2 < strLength;) {
+          const letter = str2[c2];
+          const letterCount = map1.get(letter);
+
+          // If the char count is 0 (more of this char in str2)
+          // or does not exist in str1
+          if (!letterCount) return false;
+
+          map1.set(letter, letterCount - 1);
+          c2++;
+        }
+
+        return true;
+      }
+
+      const wrd1 = 'helloh';
+      const wrd2 = 'ollehh';
+
+      // console.log(isAna(wrd1, wrd2));
+    </script>
+    <script>
+      // String compression
+      // What is the Big O? 2N or N?
+      // What is the Space Complexity? 2N or N?
+      const com1 = 'abcda';
+
+      function compress(str) {
+        const strLength = str.length;
+        const lastIndex = strLength - 1;
+        const strArr = [];
+        let ind = 0;
+        let lastLetterCount = 0; // last letter count
+        let lastLetter;
+
+        // string has 0 or 1 characters
+        if (strLength < 2) {
+          return str;
+        }
+
+        for (;ind < strLength;) {
+          const currLetter = str[ind];
+
+          // compare current letter with last recorded letter
+          if (currLetter !== lastLetter) {
+            if (lastLetterCount) {
+              insertLetter(strArr, lastLetter, lastLetterCount);
+            }
+            // update references
+            lastLetterCount = 1;
+            lastLetter = currLetter;
+          } else {
+            lastLetterCount++;
+          }
+
+          // Take care of the last letter
+          if (ind === lastIndex) {
+            insertLetter(strArr, lastLetter, lastLetterCount);
+          }
+
+          // chop execution short and return string
+          if (strArr.length > strLength) return str;
+
+          ind++;
+        }
+
+        return strArr.join('');
+      }
+
+      function insertLetter(strArray, letter, letterCount) {
+        strArray[strArray.length] = letter;
+        strArray[strArray.length] = letterCount;
+      }
+
+      // console.log(compress(com1));
+    </script>
+    <script>
+      // TODO: Rotate matrix
+      const testMatrix = [
+        [1, 2, 3, 4],
+        [5, 6, 7, 8],
+        [9, 10, 11, 12],
+        [13, 14, 15, 16],
+      ];
+
+      function rotate90(matrix) {
+        const matrixLength = matrix.length;
+        let layerInd = 0;
+        let start;
+        let end;
+        // Loop through each layer (wrapped)
+        for (;layerInd < Math.ceil(matrixLength / 2);) {
+          start = layerInd;
+          end = matrixLength - 1 - layerInd;
+
+          // Loop through each item in array
+          for (;start < end;) {
+            // and resolve related elements in "layer"
+            let top = matrix[layerInd][start];
+
+            // move left ==> top
+            matrix[layerInd][start] = matrix[end - start][layerInd];
+            // move bottom ==> left
+            matrix[end - start][layerInd] = matrix[end][end - start];
+            // move right ==> bottom
+            matrix[end][end - start] = matrix[start][end];
+            // Last: move top ==> right
+            matrix[start][end] = top;
+
+            start++;
+          }
+
+          layerInd++;
+        }
+        return matrix;
+      }
+
+      // console.log(rotate90(testMatrix));
+    </script>
+    <script>
+      // zero out matrix
+      const matrix1 = [
+        [1, 0, 3, 4],
+        [5, 6, 7, 10],
+        [0, 2, 0, 12],
+        [13, 14, 15, 16],
+      ];
+
+      function applyZero(matrix) {
+        if (!matrix.length || !matrix[0].length) return matrix;
+        // go through all elements and figure out which rows/cols to save
+        const rowLength = matrix.length;
+        const colLength = matrix[0].length;
+        const rows = new Array(rowLength); // already ordered
+        const cols = new Array(colLength); // needs to be ordered in end
+        let rowInd = 0;
+
+        // Record which rows/cols need to be set to 0
+        for (;rowInd < rowLength;) {
+          let colInd = 0;
+
+          for (;colInd < colLength;) {
+            if (matrix[rowInd][colInd] === 0) {
+              setIndexTrue(rows, rowInd);
+              setIndexTrue(cols, colInd);
+            }
+            colInd++;
+          }
+          rowInd++;
+        }
+
+        rowInd = 0;
+
+        // Now set everything
+        for (;rowInd < rowLength;) {
+          if (rows[rowInd]) setRowTrue(matrix[rowInd]);
+          else setColTrue(matrix[rowInd], cols);
+
+          rowInd++;
+        }
+
+        console.log(matrix);
+      }
+
+      function setIndexTrue(arr, ind) {
+        if (arr[ind]) return;
+
+        arr[ind] = 1;
+      }
+
+      function setRowTrue(row) {
+        let rowLength = row.length;
+
+        while (rowLength > 0) {
+          row[rowLength - 1] = 0;
+
+          rowLength--;
+        }
+      }
+
+      function setColTrue(row, colArr) {
+        const colArrLength = colArr.length;
+        let i = 0;
+
+        for (;i < colArrLength;) {
+          if (colArr[i]) row[i] = 0;
+
+          i++;
+        }
+      }
+
+      // console.log(applyZero(matrix1));
+    </script>
+    <script>
+      // 1. Check if a string is a rotation of the other
+      function checkIsRotation(str1, str2) {
+        if ((str1.length !== str2.length)|| !str1.length)
+          return false;
+
+        const strL = str1.length;
+        let i = 0;
+        let firstChar = str1[0]; // sample of str1
+
+        // find possible index matches for first letter
+        // try to create substring off of that
+        // if substring ends up not matching before the loop runs out, exit
+        for (;i < strL;) {
+          if (str2[i] === firstChar) {
+            const str2Sub1 = str2.slice(0, i);
+            const str2Sub2 = str2.slice(i);
+            const buildStr = str2Sub2 + str2Sub1;
+
+            if (buildStr === str1) return true;
+          }
+          i++;
+        }
+
+        return false;
+      }
+
+      const str1 = 'wwwwwwwwe';
+      const str2 = 'wwwwwwwwo';
+
+      // console.log(checkIsRotation(str1, str2));
+
+      // if given a method to return if a string is a substring of another
+      function checkIsRotation1(str1, str2) {
+        if ((str1.length !== str2.length)|| !str1.length)
+          return false;
+
+        const doubleString = str1 + str1;
+
+        return isSubstring(doubleString, str2);
+        // return isSubstring()
+      }
+
+      function isSubstring() {}
+    </script>
+  </body>
+</htrowLength>

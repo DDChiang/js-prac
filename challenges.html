@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <script>
+      const purchases = [
+        ['a', 'b', 'c'],
+        ['a', 'b', 'c', 'd'],
+        ['c', 'd'],
+        ['a', 'e'],
+      ];
+
+      const testArr = ['b', 'c', 'd'];
+
+      const getFrequency = (purchases, arr) => {
+        if (!purchases.length) return 0;
+
+        const aLength = arr.length;
+        let pLength = purchases.length;
+        let res = 0;
+
+        while (pLength > 0) {
+          const purch = purchases[pLength - 1];
+          const purchL = purch.length;
+
+          if (purchL > aLength) {
+            const purchSet = new Set(purch); // or use hashMap for constant lookup time
+            let purchasesFound = true;
+
+            for (let i = 0; i < aLength; i++) {
+              if (!purchSet.has(arr[i])) {
+                purchasesFound = false;
+                break;
+              }
+            }
+
+            if (purchasesFound) res++;
+          }
+          pLength--;
+        }
+        return res;
+      }
+
+      // console.log(getFrequency(purchases, testArr));
+    </script>
+    <script>
+      // REDO "get all unique subsets" Q
+
+      const testInput = [1, 2, 3, 4]; // [[], [1], [2], [3], [4], [1,2], [1,3], [1,4],
+// [2,3], [2,4], [3,4], [1,2,3], [1,2,4], [2,3,4], [], [1,2,3,4]]
+
+      function getUniqueSets(arr) {
+        let res = [[]];
+
+        if (!arr.length) return res;
+
+        let c = 0;
+
+        while (c < arr.length) {
+          const subArr = res.map(item => item.concat([arr[c]]) );
+
+          res = res.concat(subArr);
+
+          c++;
+        }
+
+        return res;
+      }
+
+      // console.log(getUniqueSets(testInput));
+    </script>
+    <script>
+    const DIALER = {
+      1: ['a', 'b'],
+      2: ['c', 'd'],
+    };
+
+    // dialerPad('1') => ['a', 'b']
+    // dialerPad('2') => ['c', 'd']
+    // dialerPad('12') => ['ac', 'ad', 'bc', 'bd']
+    // dialerPad('221') => ['cca', 'ccb', 'cda', 'cdb', 'dca', 'dcb', 'dda', 'ddb']
+
+    const dialerPad = (str) => {
+      if (!str.length) return '';
+
+      const strLength = str.length;
+      let c = 1;
+      let results = DIALER[str[1]].slice();
+
+      while (c < strLength) {
+        const currItemValues = DIALER[str[c]];
+        let tempArr = [];
+
+        // currItemValues.forEach(())
+        c++;
+      }
+
+      return results;
+    }
+
+    // console.log(dialerPad('12'));
+    </script>
+    <script>
+      const testArrAna = ['ana', 'bbb', 'bber', 'kokoko', 'naa', 'kokoko', 'kokokos'];
+      // const testArr = ['ana'];
+
+      class Anagram {
+        constructor () {
+          this.strLength = 0;
+          this.letterMap = {}
+          this.count = 0;
+          this.words = [];
+        }
+
+        create(str) {
+          const strLength = str.length;
+          let c = 0;
+          let currLetter;
+
+          for (;c < strLength;) {
+            currLetter = str[c];
+
+            if (!this.letterMap[currLetter]) {
+              this.letterMap[currLetter] = 1;
+            } else {
+              this.letterMap[currLetter] += 1;
+            }
+
+            c++;
+          }
+
+          this.strLength = strLength;
+          this.words.push(str);
+        }
+
+        compareWord(str) {
+          if (str.length !== this.strLength) {
+            return false;
+          }
+
+          const strLength = str.length;
+          const strLetterMap = {};
+          let currLetter = null;
+          let c = 0;
+
+          // build up temp letter map to compare with orig Anagram's
+          for (;c < strLength;) {
+            currLetter = str[c];
+
+            if (!strLetterMap[currLetter]) {
+              strLetterMap[currLetter] = 1;
+            } else {
+              strLetterMap[currLetter] += 1;
+            }
+
+            c++;
+          }
+
+          for (let key in strLetterMap) {
+            if (strLetterMap.hasOwnProperty(key)
+              && strLetterMap[key] !== this.letterMap[key]
+            ) {
+              return false;
+            }
+          }
+
+          return true;
+        }
+
+        addWord(str) {
+          this.count++;
+          this.words.push(str);
+        }
+      }
+
+      const createAnagram = (str) => {
+        const newAnagram = new Anagram();
+
+        newAnagram.create(str);
+        return newAnagram;
+      }
+
+      const findAnagramMatch = (anaArr, str) => {
+        const anaArrLength = anaArr.length;
+        let c = 0;
+
+        for (;c < anaArrLength;) {
+          if (anaArr[c].compareWord(str)) return anaArr[c];
+          c++;
+        }
+        return false;
+      }
+
+      const printResults = (anaArr) => {
+        const res = [];
+
+        for (ind in anaArr) {
+          res.push(anaArr[ind].words);
+        }
+
+        console.log(res.join('\n'));
+      }
+
+      const printGroupsByAnagram = (arr) => {
+        if (arr.length <= 1) {
+         return [arr];
+        }
+
+        const anagrams = [];
+        const arrL = arr.length;
+        let c = 0;
+        let currItem = null;
+        let anagramMatch = null;
+
+        for (;c < arrL;) {
+          currItem = arr[c];
+          anagramMatch = findAnagramMatch(anagrams, currItem);
+
+          if (!anagramMatch) {
+            const newAnagram = new Anagram();
+
+            newAnagram.create(str);
+            anagrams.push(newAnagram);
+          } else {
+            anagramMatch.addWord(currItem);
+          }
+          c++;
+        }
+        printResults(anagrams);
+      }
+
+      // printGroupsByAnagram(testArrAna);
+    </script>
+    <script>
+      var data = [
+        {"id": 9, "name": "Downtown San Jose", "parent_id": 2 },
+        {"id": 1, "name": "San Francisco Bay Area", "parent_id": null},
+        {"id": 2, "name": "San Jose", "parent_id": 3},
+        {"id": 8, "name": "Chelsea", "parent_id": 5},
+        {"id": 3, "name": "South Bay", "parent_id": 1},
+        {"id": 4, "name": "San Francisco", "parent_id": 1},
+        {"id": 5, "name": "Manhattan", "parent_id": 6},
+        {"id": 6, "name": "New York", "parent_id": null},
+        {"id": 7, "name": "East Village", "parent_id": 5}
+      ];
+
+      // list of trees
+      const parentNodesList = [];
+
+      const parentMap = {};
+      const nodesCreated = {}; // Node has been created
+
+      const orphans = [];
+
+      class Node {
+        constructor() {
+          this.root = null;
+          this.nodes = [];
+        }
+
+        traverse(cb) {
+          function walk(node) {
+            cb(node);
+            node.children.forEach(walk);
+          }
+          walk(this.root);
+        }
+
+        add(value) {
+          const newNode = { ...value, children: [] };
+
+          if (this.root === null) {
+            this.root = newNode;
+            return;
+          }
+          // find correct place to add child (alphabetically)
+          this.traverse((node) => {
+            if (node.id === newNode.parent_id) {
+              node.children.push(newNode);
+            }
+          });
+        }
+
+        contains(id) {
+          // root
+          let found = false;
+          // this.nodes
+          this.traverse((node) => {
+            if (node.id === id) found = true;
+          })
+
+          return found;
+        }
+      }
+
+      // Separate out parent trees (parent_id === null)
+      data.forEach(item => {
+        if (item.parent_id === null) {
+          const newNode = new Node();
+
+          newNode.add(item);
+          parentNodesList.push(newNode);
+          nodesCreated[item.id] = true;
+        } else {
+          orphans.push(item);
+          parentMap[item.id] = item.parent_id;
+        }
+      });
+
+      const findItem = (arr, id) => {
+        const arrL = arr.length;
+        let c = 0;
+
+        for (;c < arrL;) {
+          if (arr[c].id === id) return arr[c];
+          c++;
+        }
+
+        return null;
+      }
+
+      orphans.forEach(item => {
+        const itemId = item.id;
+        const chainStack = [itemId];
+        let currMapItemParent = parentMap[itemId];
+        let currItemId = null;
+
+        while (currMapItemParent) {
+          chainStack.push(currMapItemParent);
+          currMapItemParent = parentMap[currMapItemParent];
+        }
+
+        const treeParentNodeId = chainStack.pop();
+        const treeParentNode = find(parentNodesList, treeParentNodeId);
+
+        while (chainStack.length) {
+          currItemId = chainStack.pop();
+
+          if (!nodesCreated[currItemId]) {
+            if (treeParentNode.contains)
+            // const foundItem = findItem(orphans, currItemId);
+            //
+            // // create Node
+            // const newNode = new Node();
+            // newNode.add(foundItem);
+            //
+            // // add to tree ==> traverse
+
+            nodesCreated[currItemId] = true;
+          }
+        }
+      });
+
+      // console.log(parentNodesList);
+    </script>
+    <script>
+      // Get longest consecutive array
+      const testValArr = [1,4,2,5,6,9,10,3];
+      const getLongestSequence = (arr) => {
+        const visited = {};
+        const arrLength = testValArr.length;
+        let res = [];
+
+        for (let c = 0; c < arrLength; c++) {
+          visited[arr[c]] = true;
+        }
+
+        for (let c = 0; c < arrLength; c++) {
+          const tempRes = [arr[c]];
+          let tempItem = arr[c] + 1;
+
+          while (visited[tempItem]) {
+            tempRes.push(tempItem);
+            delete visited[tempItem];
+
+            tempItem ++;
+          }
+
+          if (tempRes.length > res.length) {
+            res = tempRes;
+          }
+        }
+
+        return res;
+      }
+
+      // console.log(getLongestSequence(testValArr));
+    </script>
+  </body>
+</html>

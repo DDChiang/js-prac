@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <script>
+      // console.log('hi');
+      // setTimeout(() => {
+      //   console.log(1);
+      // }, 0);
+      // console.log('bye');
+
+      function fetchX() {
+        return new Promise((res, rej) => {
+          setTimeout((val) => {
+            res(2);
+          }, 3000, 'foo');
+        }).then((res) => {
+          return res;
+        })
+      }
+      function fetchY() {
+        return new Promise((res, rej) => {
+          setTimeout(() => {
+            res(4);
+          }, 2000);
+        }).then((res)=> {
+          return res;
+        });
+      }
+
+      function getAll(fn1, fn2) {
+        return Promise.all([fn1, fn2])
+          .then((val) => {
+            console.log(val[0] + val[1]);
+          });
+      }
+
+      // getAll(fetchX(), fetchY());
+
+      // ((val) => {
+      //   return new Promise((res, rej) => {
+      //     foo.bar();
+      //     setTimeout(() => {
+      //
+      //       res(val);
+      //     }, 1000);
+      //   }).then((val) => {
+      //     // foo.bar();
+      //     console.log(val);
+      //   }, (err) => {
+      //     console.log(err);
+      //   })
+      //   .catch((err) => {
+      //     console.log('catch!', err);
+      //   })
+      // })(2)
+
+      // Using "async" turns operation into a promise
+      async function res1() {
+        const po = new Promise((res, rej) => {
+          setTimeout(() => {
+            res(2);
+          }, 3000);
+        }).then((res) => {
+          return res;
+        });
+
+        const g1 = await po;
+
+        return g1;
+      }
+
+      // // You're outside async function so you must use "then"
+      // // Async function
+      // res1().then(() => console.log('DONE'));
+
+      // Async function that fires immediately (IIFE)
+      (async () => {
+        const p1 = new Promise((res, rej) => {
+          setTimeout(() => {
+            res(2);
+          }, 500)
+        })
+        .then((res) => {
+          return res;
+        });
+
+        const result = await p1;
+
+        return result;
+      })()
+
+      // Closures mixed with async
+
+      // This keyword
+      // const test3 = () => {
+      //   return {
+      //     value: 42,
+      //     getVal: function() {
+      //       return this.value;
+      //     }
+      //   };
+      // }
+      //
+      // const test1 = test3();
+      //
+      // console.log(test1.getVal());
+
+      function saveFn() {
+        let localVal;
+
+        return {
+          // need to use "function" keyword or else
+            // arguments will default to pointing at "saveFn" fn arguments<---
+            // If you don't use function keyword, any parameter passed into saveFn i.e. saveFn(2)
+            // gets saved into the closure/context/environment that's been created
+            // AT THE TIME the object has been created
+            // Note: This causes weird side effects where arguments always has a length
+          // saveVal: (val) => {
+            // using "function" keyword creates a fresh closure environment for the method that's being called
+          saveVal: function(val) {
+            if (arguments.length) {
+              localVal = val;
+            }
+          },
+          getVal: () => {
+            return localVal;
+          }
+        }
+      }
+
+      const item = saveFn(2);
+
+      item.saveVal();
+      item.saveVal();
+
+      // test out without {}
+      function saveFnGo(val1) {
+        let origVal = arguments.length ? val1 : undefined;
+
+        return function(val) {
+          origVal = val;
+
+          if (arguments.length)
+            console.log(arguments);
+          else
+            console.log('no args');
+
+          console.log(origVal);
+        }
+      }
+
+      const jo = saveFnGo();
+      // jo(2);
+
+      // TODO: function expression + closure
+      const expressSave = (val1) => {
+        let savedVal = val1;
+
+        return function(val) {
+          if (arguments.length) {
+            savedVal = val;
+          }
+
+          // val1 that was initially passed in from the original anonymous function  is remembered
+          // since it was defined at the time the inner function was created (reference was saved)
+          console.log(savedVal, val1);
+        }
+      }
+
+      // const something = expressSave(2);
+      // something(3);
+      // something();
+      // something(5);
+      // const anotherThing = expressSave(10);
+      // anotherThing(2);
+      // something();
+
+      // // Closure + async
+      const saveForLater = function(name) {
+        let origName = arguments.length ? name : 'no name';
+
+        return async function(val) {
+          return new Promise((res, rej) => {
+            if (arguments.length) {
+              setTimeout(() => {
+                res(val);
+              }, 1000);
+            } else {
+              res('N/A');
+            }
+          }).then((res) => {
+            console.log(`${origName} ${res}`);
+
+            return `${origName} ${res}`;
+          });
+        }
+      }
+
+      const benji = saveForLater('benji');
+
+      // benji('foo');
+
+      // // currying
+      const curry = (val1) => (val2) => val1 + val2;
+
+      const curry1 = curry(2);
+      console.log(curry1(3));
+    </script>
+  </body>
+</html>

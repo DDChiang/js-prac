@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <script>
+    /* subscribe */
+    //
+    // stream
+    //
+    // new stream
+    //
+    // .push
+    // .subscribe
+    //
+    //
+    // // b
+    // .map
+
+    function Stream() {
+      this.cbList = [];
+
+      return this;
+    }
+
+    Stream.prototype.subscribe = function(cb) {
+      this.cbList.push(cb);
+    }
+
+    Stream.prototype.push = function(val) {
+      this.cbList.forEach(cb => cb(val));
+    }
+
+    // part 1
+    const a = new Stream();
+
+    a.subscribe(console.log);
+    a.push(4);
+    a.push(2);
+
+    // part 2
+    const b = a.map(() => a * 2);
+
+    b.subscribe(console.log);
+    a.push(1)
+    a.push(2)
+    // both a and b fire
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Try Catch</title>
+  </head>
+  <body>
+    <script>
+      // Try Catch
+      // "Try catch" statements are used to mark blocks of statements to try,
+      // and specifies a response in case errors are thrown
+
+      try {
+        // eval('alert("Hello)');
+        throw 'myException whee!';
+      } catch(error) {
+        console.log(error);
+      }
+
+      function isValidJSON(text) {
+        try {
+          JSON.parse(text);
+          return true;
+        } catch(err) {
+          console.log(err);
+          return false;
+        } finally {
+          console.log('finally');
+        }
+
+      }
+
+      const testStuff = '{"result":true, "count":42}';
+      console.log(isValidJSON(testStuff));
+
+      try {
+        setTimeout(() => {
+          throw 'error!!!!!';
+        }, 3000)
+      } catch (err) {
+        console.log(err);
+      }
+
+    </script>
+  </body>
+</html>

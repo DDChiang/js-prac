@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <script>
+      // Practice JS Maps
+      // What is a Map?
+        // Hash table like object that stores values as "key - value" pairs
+        // Traditionally use Object before Map came into play
+      // Advantages vs Array or Object
+        // (vs Array) Look up values by key
+        // (vs Array) allows you to delete/add keys easily
+        // (vs object) It's an iterable, -- Iterate through each element/pair in insertion order
+          // -- flexible enough to iterate via "key", "value", or entire entry
+          // produces iterable so can be treated similar to an array
+        // (vs Object) Can get size of how many keys/elements have been inserted
+      // Disadvantages vs Array or Object
+        // (vs Array) Similar to objects, still need to make sure keys don't conflict
+      // const arr1 = [{'one': 1}, {'two': 2}, {'three': 3}];
+      const arr2 = [['one', 1], ['two', 2], ['three', 3]];
+
+      // Map can only accept 2D arrays whose elements are array with values inside (key value pairs)
+      const newMap2 = new Map(arr2);
+
+      // console.log(newMap2);
+      // newMap2.get('one');
+      // newMap2.forEach((val, key) => {
+      //   console.log(key, val);
+      // });
+
+      // console.log(newMap2.keys());
+      // console.log(newMap2.values());
+      // console.log(newMap2.entries());
+
+      newMap2.set(()=> {}, 'hehe');
+
+      for (let key of newMap2.keys()) {
+        // console.log(key);
+      }
+
+      for (let value of newMap2.values()) {
+        // console.log(value);
+      }
+
+      for (let [key, value] of newMap2.entries()) {
+        // console.log(`${key} - ${value}`);
+      }
+
+      // Create Array from Map object
+      for (let [key, value] of newMap2.entries()) {
+        newMap2.set(key, 2 + value);
+      }
+
+      const newArray2 = Array.from(newMap2.values());
+
+      // Create Object???
+    </script>
+  </body>
+</html>

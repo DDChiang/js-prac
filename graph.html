@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Graph!</title>
+  </head>
+  <body>
+    <script>
+      // GRAPH!
+      function Graph() {
+        this.vertices = []; // list of "vertex" objects
+      }
+
+      function Vertex(name) {
+        this.name = name;
+        this.edges = []; // only stores reference to name
+      }
+
+      Vertex.prototype.addEdge = function(vertexName) {
+        this.edges.push(vertexName);
+      }
+
+      Graph.prototype.add = function(vertexName, edges=[]) {
+        // Create new vertex
+        const newVertex = new Vertex(vertexName);
+
+        // Add edge connections to new vertex object
+        edges.forEach(edge => newVertex.addEdge(edge));
+
+        // Create connections for related vertexes
+        this.vertices.forEach((vertex) => {
+          // only new vertex knows of which connections need to be made
+          if (newVertex.edges.includes(vertex.name)) {
+            vertex.addEdge(vertexName);
+          }
+        });
+
+        // Add new vertex to vertex list
+        this.vertices.push(newVertex);
+      };
+
+      Graph.prototype.allEdges = function() {
+        let allEdges = [];
+
+        this.vertices.forEach((vertex) => {
+          let vertexName = vertex.name;
+          vertex.edges.forEach(edge => allEdges.push(`${vertexName}-${edge.name}`));
+        });
+
+        return allEdges;
+      }
+
+      Graph.prototype.checkAdjacency = function(firstVertexName, secondVertexName) {
+        // check if 2 vertices are neighbors /connected
+        let foundVertex = this.findVertex(firstVertexName);
+
+        if (foundVertex) {
+          return foundVertex.edges.includes(secondVertexName);
+        }
+        return false;
+      }
+
+      /*
+      * Check if 2 vertices are connected at all
+      * @params {str, str}
+      * @returns {bool}
+      */
+      Graph.prototype.checkConnection = function(firstVertexName, targetVertexName) {
+        const firstVertex = this.findVertex(firstVertexName);
+        const visited = {};
+        const queue = [firstVertex];
+
+        while (queue.length) {
+          const currItem = queue.shift();
+
+          if (currItem.name === targetVertexName) return true;
+
+          visited[currItem.name] = true;
+
+          currItem.edges.forEach((edgeName) => {
+            if (!visited[edgeName]) queue.push(this.findVertex(edgeName));
+          });
+        }
+
+        return false;
+      }
+
+      Graph.prototype.findVertex = function(vertexName) {
+        const verticesLength = this.vertices.length;
+        let i = 0;
+
+        for (;i < verticesLength;) {
+          if (this.vertices[i].name === vertexName) return this.vertices[i];
+          i++
+        }
+        return null;
+      }
+
+      Graph.prototype.BFS = function(startVertexName, targetVertexName) {
+        // find starting node vertex (From name)
+        const initVertex = this.findVertex(startVertexName);
+
+        const parents = []; // keep track of parents
+        const visited = {}; // keep track of visited
+        const queue = [{ vertex: initVertex, count: 0}]; // keep track of current queue
+        let currItem = null;
+
+        // go through edges --- keep exploring edges
+          // if find targetVertex (from name) ==> end exploration loop
+        while (queue.length) {
+          currItem = queue.shift();
+
+          if (currItem.vertex.name === targetVertexName) {
+            // return path
+            return parents.concat(currItem);
+          }
+
+          parents.push(currItem);
+          visited[currItem.vertex.name] = true;
+          // add edges to queue
+          currItem.vertex.edges.forEach((edgeName) => {
+            if (!visited[edgeName]) queue.push({ vertex: this.findVertex(edgeName), count: currItem.count + 1 });
+          });
+        }
+      }
+
+      Graph.prototype.findShortestPath = function(startVertexName, targetVertexName) {
+        const firstVertex = this.findVertex(startVertexName);
+
+        if (startVertexName === targetVertexName) {
+          return [firstVertex];
+        }
+
+        const mapping = {};
+        const visited = [];
+        const queue = [firstVertex];
+        let currItem;
+
+        while (queue.length) {
+          const currItem = queue.shift();
+
+          if (currItem.name === targetVertexName) {
+            const path = [targetVertexName];
+            let mapItemParentName = mapping[targetVertexName]; // parent
+
+            while (mapItemParentName) {
+              path.push(mapItemParentName); // parent Name
+              mapItemParentName = mapping[mapItemParentName];
+            }
+
+            return path.reverse();
+          }
+
+          visited[currItem.name] = true;
+
+          // add in neighbor edges
+          currItem.edges.forEach((edgeName) => {
+            if (!visited[edgeName]) {
+              queue.push(this.findVertex(edgeName));
+              mapping[edgeName] = currItem.name; // remember parent
+            }
+          })
+        }
+      }
+
+      const tg = new Graph();
+
+      tg.add('a');
+      tg.add('b', ['a']);
+      tg.add('c', ['a']);
+      tg.add('d', ['c', 'b']);
+      tg.add('f', ['d']);
+      tg.add('h', ['f']);
+      tg.add('g', ['h']);
+      tg.add('z', ['a']);
+      tg.add('y', ['z', 'g']);
+
+      console.log(tg);
+    </script>
+  </body>
+</html>

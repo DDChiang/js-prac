@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <script>
+      // Q1
+      const input = [1,2,3,4,5];
+      const sum = 4;
+
+      function checkIfSumAvailable(arr, val) {
+        const arrL = arr.length;
+        let c1 = 0;
+        let sumHasBeenMet = false;
+
+        if (arrL < 2) {
+          return false;
+        }
+
+        for (;c1 < arrL;) {
+          if (sumHasBeenMet) break;
+
+          if (arr[c1] > val) {
+            c1++;
+            continue;
+          }
+
+          let c2 = c1 + 1;
+
+          for (;c2 < arrL;) {
+            if (sumHasBeenMet) break;
+
+            if (arr[c2] > val) {
+              c2++;
+              continue;
+            }
+
+            if (c1 + c2 === val) {
+              sumHasBeenMet = true;
+              break;
+            }
+            c2++;
+          }
+          c1++;
+        }
+
+        return sumHasBeenMet;
+      }
+
+      // console.log(checkIfSumAvailable(input, sum));
+
+      // Q2
+      function setObj() {
+        this.value = [];
+
+        return this;
+      }
+
+      setObj.prototype.insert = function(val) {
+        const currArr = this.value;
+        const valFound = currArr.filter((item) => {
+          return item === val;
+        });
+
+        if (!valFound.length) {
+          this.value[currArr.length] = val;
+        }
+      }
+
+      setObj.prototype.remove = function(val)  {
+        const currArr = this.value.slice();
+        const currArrL = currArr.length;
+        let c = 0;
+
+        for (;c < currArrL;) {
+          if (currArr[c] === val) {
+            currArr.splice(c, 1);
+            break;
+          }
+          c++;
+        }
+
+        this.value = currArr;
+      }
+
+      setObj.prototype.getRandomElement = function() {
+        const currArr = this.value;
+        const currArrL = currArr.length;
+
+        if (!currArrL) return null;
+        if (currArrL === 1) return currArr[0];
+
+        const ranIndex = Math.floor((Math.random() * (currArrL - 1)));
+
+        return currArr[ranIndex];
+      }
+
+      const testSet = new setObj();
+
+      testSet.insert(2);
+      testSet.insert(2);
+      testSet.insert(3);
+      testSet.insert(4);
+      testSet.remove(2);
+      testSet.getRandomElement();
+    </script>
+  </body>
+</html>

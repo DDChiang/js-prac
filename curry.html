@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <script>
+    /*
+    * Function that transforms a function into a curried function (partial evaluation)
+    * What is a curried function?
+    * A curried function is a functional programming pattern
+    * where the first fn call "partially applies" and binds some of  the arguments from the first invoke (keeps it in scope)
+    * and the second invoke finishes up execution using the newly available scope created from both the second fn call and what's been remembered from the first call
+    *
+    * useful for waiting on async processes/events
+    */
+      function currier(fn) {
+        const firstArg = arguments[1];
+
+        return function(otherArg) {
+          return fn.apply(this, [firstArg].concat(otherArg));
+        }
+      }
+
+      // function currier(fn) {
+      //   const args = Array.prototype.slice.call(arguments, 1);
+      //
+      //   return function() {
+      //     // arguments here is different than arguments in top context (fn layer)
+      //     return fn.apply(this, args.concat(
+      //       Array.prototype.slice.call(arguments, 0)
+      //     ));
+      //   }
+      // }
+
+      function someFn(arg1, arg2) {
+        return arg1;
+      }
+
+      const returnInc = currier(someFn, 8);
+      returnInc(5);
+
+    </script>
+  </body>
+</html>

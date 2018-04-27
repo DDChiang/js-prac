@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Test String Conversion</title>
+  </head>
+  <body>
+    <script>
+    /**
+      * Write a function that takes in a string and converts it's case.
+      * ex: convertCase("MyString", "camelCase") -> "myString"
+      * ex: convertCase("my_string", "camelCase") -> "myString"
+      * ex: convertCase("MyString", "snakeCase") -> "my_string"
+      * ex: convertCase("my_string", "pascalCase") -> "MyString"
+
+      */
+
+      // uppercase ==>  [65, 90];
+      // _ ==> 95;
+      const convertCase = (str, newCaseType) => {
+        if (!str.length || !newCaseType) return str;
+
+        const isSnake = str.indexOf('_') !== -1;
+        let origCaseType;
+
+        // Decide original case type
+        if (!isSnake) {
+          const firstLetterCap = str.charCodeAt(0) >= 65 && str.charCodeAt(0) <= 90;
+
+          origCaseType = firstLetterCap ? 'pascalCase' : 'camelCase';
+        } else {
+          origCaseType = 'snakeCase';
+        }
+
+        // If old case and new case are the same, return string
+        if (origCaseType === newCaseType) return str;
+
+        // If different, do conversions
+        if (newCaseType === 'snakeCase') {
+          return convertAlphaToSnake(str);
+        } else if (origCaseType === 'snakeCase') {
+          return convertSnakeToAlpha(str, newCaseType);
+        } else { // convert btw alphas
+          return convertAlphaToAlpha(newCaseType);
+        }
+      }
+
+      const convertSnakeToAlpha = (str, newCaseType) => {
+        const strSplit = str.split('_');
+        const strSplitL = strSplit.length;
+        let c = 0;
+
+        for (;c < strSplitL;) {
+          const item = strSplit[c];
+          let slice1 = item.slice(0, 1);
+          const slice2 = item.slice(1);
+
+          if (c === 0 && newCaseType === 'camelCase') {
+            slice1 = slice1.toLowerCase();
+          } else {
+            slice1 = slice1.toUpperCase();
+          }
+
+          strSplit[c] = slice1 + slice2;
+          c++;
+        }
+        return strSplit.join('');
+      }
+
+      const convertAlphaToSnake = (str) => {
+        const strL = str.length;
+        let c = 0;
+        let res = '';
+
+        for (;c < strL;) {
+          const char = str[c];
+          const isUpperCase = str.charCodeAt(c) >= 65 && str.charCodeAt(c) <= 90;
+
+          if (c === 0 && isUpperCase) {
+            res += char.toLowerCase();
+          } else if (isUpperCase) {
+            res += `_${ char.toLowerCase() }`;
+          } else {
+            res += char;
+          }
+          c++;
+        }
+        return res;
+      }
+
+      const convertAlphaToAlpha = (str, newCaseType) => {
+        const slice2 = str.slice(1);
+        let slice1 = str.slice(0, 1);
+
+        slice1 = (newCaseType === 'camelCase')
+          ? slice1.toLowerCase()
+          : slice1.toUpperCase();
+
+        return slice1 + slice2;
+      }
+
+      const testString = 'myString';
+
+      console.log(convertCase(testString, 'pascalCase'));
+
+
+    </script>
+  </body>
+</html>

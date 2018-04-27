@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <script>
+      // Binary Search Tree
+      // Look up and insertion: 0(log N)
+      // height: ave: O(log N), worse O(N)
+      function BST(val) {
+        this.value = val;
+        this.left = null;
+        this.right = null;
+        this.left_size = 0;
+      }
+
+      BST.prototype.insert = function(val) {
+        if (val <= this.value) {
+          if (!this.left) this.left = new BST(val);
+          else this.left.insert(val);
+          this.left_size++;
+        } else {
+          if (!this.right) this.right = new BST(val);
+          else this.right.insert(val);
+        }
+      }
+
+      BST.prototype.contains = function(val) {
+        if (!this.value) return null;
+
+        if (val === this.value) return true;
+
+        if (val < this.value) {
+          if (!this.left) return null
+          else return this.left.contains(val);
+        } else {
+          if (!this.right) return null;
+          else return this.right.contains(val);
+        }
+      }
+
+      BST.prototype.getMinVal = function() {
+        if (this.left) return this.left.getMinVal();
+        return this.value;
+      }
+
+      BST.prototype.getMaxVal = function() {
+        if (this.right) return this.right.getMaxVal();
+        return this.value;
+      }
+
+      BST.prototype.depthFirstTraversal = function(iteratorFunc, order) {
+        if (!this.value) return;
+
+        iteratorFunc(this.value);
+
+        if (this.left) this.left.depthFirstTraversal(iteratorFunc);
+        if (this.right) this.right.depthFirstTraversal(iteratorFunc);
+      }
+
+      BST.prototype.breadthFirstTraversal = function(iteratorFunc) {
+        let queue = [this];
+        let treeNode;
+
+        while (queue.length) {
+          treeNode = queue.shift();
+          iteratorFunc(treeNode);
+          if (treeNode.left) queue.push(treeNode.left);
+          if (treeNode.right) queue.push(treeNode.right);
+        }
+      }
+
+      BST.prototype.findRank = function(val) {
+        if (this.value === val) {
+          return this.left_size;
+        } else if (this.value > val) {
+          if (!this.left) return -1;
+          return this.left.findRank(val);
+        } else {
+          const right_rank = this.right ? this.right.findRank(val) : -1;
+
+          if (right_rank === -1) return -1;
+
+          return -1 + this.left_size + right_rank;
+        }
+      }
+
+      const log = (item) => {
+        // console.log(item.value);
+      }
+
+      const testBST = new BST(5);
+
+      testBST.insert(3);
+      testBST.insert(8);
+      testBST.insert(2);
+      testBST.insert(4);
+      testBST.insert(3);
+      testBST.insert(1);
+      testBST.insert(1);
+      testBST.insert(1);
+      testBST.insert(3);
+      // testBST.breadthFirstTraversal(log);
+
+      // console.log(testBST);
+    </script>
+    <script>
+      // Insert ==> O(1)
+      // LookUp ==> O(1)
+      // Retrieve All ==> O(N^2)
+      // // Hash Tables
+      function HashTable(size) {
+        this.buckets = new Array(size);
+        this.numBuckets = this.buckets.length;
+      }
+
+      // console.log(newHT);
+
+      function HashNode(key, value, next) {
+        this.key = key;
+        this.value = value;
+        this.next = next || null;
+      }
+
+      // Hash fn takes a key and returns a bucket number
+        // that will be used as index for the key
+      HashTable.prototype.hash = function(key) {
+        let total = 0;
+        let i = 0;
+        let keyL = key.length;
+
+        for (;i<keyL;) {
+          total += key.charCodeAt(i);
+          i++;
+        }
+        return total % this.numBuckets;
+      }
+
+      let newHT = new HashTable(30);
+
+      HashTable.prototype.insert = function(key, value) {
+        // get hash index
+        const ind = this.hash(key);
+        // Check for collisions before inserting into HashTable for storage
+        if (!this.buckets[ind]) {
+          // Create new hash node
+          this.buckets[ind] = new HashNode(key, value);
+        } else if (this.buckets[ind].key === key) { // simply updating val for key
+          this.buckets[ind].value = value;
+        } else { // Chain nodes if there's a key collision
+          let currNode = this.buckets[ind];
+
+          // Search through chained nodes if chain exists
+          while (currNode.next) {
+            if (currNode.next.key === key) {
+              currNode.next.value = value;
+              return; // exits function completely vs "break" (exclusively for existing while loop)
+            }
+            currNode = currNode.next;
+          }
+
+          currNode.next = new HashNode(key, value);
+        }
+      }
+
+      newHT.insert('a', 'aac');
+      newHT.insert('C', 'CCC');
+      newHT.insert('b', 'bbb');
+      newHT.insert('%', '%%%');
+
+      // Get value
+      HashTable.prototype.get = function(key) {
+        const ind = this.hash(key);
+
+        if (!this.buckets[ind]) return -1;
+
+        // Traverse nodes to find value belonging to key
+        let currNode = this.buckets[ind];
+
+        while (currNode) {
+          if (currNode.key === key) {
+            console.log(currNode.value);
+            return currNode.value;
+          } else {
+            currNode = currNode.next;
+          }
+        }
+
+        return -1;
+      }
+
+      HashTable.prototype.getAll = function() {
+        let allNodes = [];
+        let totalNodes = this.numBuckets;
+        let ind = 0;
+
+        for (;ind < totalNodes;) {
+          let currNode = this.buckets[ind];
+
+          while (currNode) {
+            allNodes[allNodes.length] = {
+              key: currNode.key,
+              value: currNode.value,
+            };
+            // keep traversing
+            currNode = currNode.next;
+          }
+          ind++;
+        }
+
+        return allNodes;
+      }
+
+    </script>
+    <script>
+      // Linked List
+      function LinkedList() {
+        this.head = null;
+        this.tail = null;
+      }
+
+      // Node Constructor
+      function Node(val, next, prev) {
+        this.value = val;
+        this.next = next;
+        this.prev = prev;
+      }
+
+      LinkedList.prototype.insert = function(val) {
+        if (!this.head) {
+          this.addHead(val);
+          return;
+        }
+
+        const newItem = new Node(val, null, this.tail);
+
+        this.tail.next = newItem;
+        this.tail = newItem;
+      }
+
+      LinkedList.prototype.addHead = function(val) {
+        const headItem = new Node(val, this.head, null);
+
+        if (this.head) this.head.prev = headItem;
+        else this.tail = headItem;
+
+        this.head = headItem;
+      }
+
+      LinkedList.prototype.removeHead = function() {
+        if (!this.head) return;
+
+        const nextHeadItem = this.head.next;
+
+        if (nextHeadItem) {
+          nextHeadItem.prev = null;
+          this.head = nextHeadItem;
+        } else {
+          this.head = null;
+          this.tail = null;
+        }
+      }
+
+      LinkedList.prototype.removeTail = function() {
+        if (!this.tail) return;
+
+        const prevItem = this.tail.prev;
+
+        if (prevItem) {
+          prevItem.next = null;
+          this.tail = prevItem;
+        } else {
+          this.head = null;
+          this.tail = null;
+        }
+      }
+
+      LinkedList.prototype.search = function(val) {
+        if (!this.tail) return -1;
+
+        let ind = 0;
+        let currNode = this.head;
+
+        while (currNode) {
+          if (currNode.value === val) {
+            return ind;
+          } else if (currNode.next) {
+            currNode = currNode.next;
+          } else {
+            return -1;
+          }
+
+          ind++;
+        }
+      }
+
+      LinkedList.prototype.delete = function(val) {
+        if (!this.tail) return;
+
+        let currNode = this.head;
+
+        while (currNode) {
+          if (currNode.value === val) {
+            if (currNode.prev) currNode.prev.next = currNode.next;
+            else this.head = currNode.next;   // need to fix "this.head" if we're removing headItem
+
+            if (currNode.next) currNode.next.prev = currNode.prev;
+            else this.tail = currNode.prev; // need to fix "this.tail" if we're removing tailItem
+
+            break;
+          }
+          currNode = currNode.next;
+        }
+      }
+
+      LinkedList.prototype.deleteWithin = function(val) {
+        let currNode = this.head;
+
+        while (currNode) {
+          if (currNode.value === val) {
+            if (currNode.prev) currNode.prev.next = currNode.next;
+            if (currNode.next) currNode.next.prev = currNode.prev;
+            break;
+          }
+          currNode = currNode.next;
+        }
+      }
+
+      const tLinker = new LinkedList();
+
+      tLinker.insert('a');
+      tLinker.insert('b');
+      tLinker.insert('c');
+      tLinker.addHead('0');
+    </script>
+    <script>
+      // Heap
+
+    </script>
+    <script>
+      // Graph ???
+    </script>
+    <script>
+      // Graph
+    </script>
+    <script>
+      // Stack / Queue
+    </script>
+  </body>
+</html>

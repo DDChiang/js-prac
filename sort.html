@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <script>
+      var boo = [
+        94455,
+        20555,
+        20535,
+        53125,
+        73634,
+        148,
+        63772,
+        17738,
+        62995,
+        13401,
+        95912,
+        13449
+      ];
+
+      var booSorted = boo.sort((a, b) => {
+        console.log(a, b, parseInt(a) > parseInt(b));
+        return a - b;
+      });
+
+      console.log(booSorted);
+    </script>
+  </body>
+</html>

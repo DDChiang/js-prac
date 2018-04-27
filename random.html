@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <script>
+    function LL() {
+      this.head = null;
+      this.tail = null;
+      }
+
+      function node(val, prev, next) {
+      this.val = val;
+      this.prev = prev;
+      this.next = next;
+      }
+
+      LL.prototype.addHead = function(val) {
+      if (!this.head) {
+        const newNode = new node(val, null, null);
+
+        this.head = newNode;
+        this.tail = newNode;
+
+        return;
+      }
+
+      const newNode = new node(val, null, this.head);
+
+        this.head.prev = newNode;
+        this.head = newNode;
+
+      }
+
+      LL.prototype.insertNode = function(val) {
+        if (!this.head) this.addHead(val);
+
+        const newNode = new node(val, this.tail, null);
+
+        this.tail.next = newNode;
+        this.tail = newNode;
+      }
+
+      const testLL = new LL();
+
+      LL.prototype.removeDups = function() {
+        const objTrack = {};
+
+        let currNode = this.head;
+
+        while (currNode) {
+          const currVal = currNode.val;
+
+          if (!objTrack[currVal]) {
+            objTrack[currVal] = 1;
+          } else {
+            console.log('dup', currVal);
+            if (currNode.prev) currNode.prev.next = currNode.next;
+            if (currNode.next) currNode.next.prev = currNode.prev;
+            if (this.tail === currNode) this.tail = currNode.prev;
+          }
+
+          currNode = currNode.next;
+        }
+      }
+
+      LL.prototype.removeDups1 = function() {
+        let currNode = this.head;
+
+        while (currNode) {
+          let runner = currNode;
+
+          while (runner.next) {
+            if (runner.next.val === currNode.val) {
+              runner.next = runner.next.next;
+              // need to update .prev
+              // need to update tail
+            } else {
+              runner = runner.next;
+            }
+          }
+
+          currNode = currNode.next;
+        }
+      }
+
+      testLL.addHead(2);
+      testLL.insertNode(4);
+      testLL.insertNode(1);
+      testLL.insertNode(4);
+      testLL.insertNode(3);
+
+      testLL.insertNode(2);
+      testLL.removeDups1();
+
+      console.log(testLL);
+
+
+
+    </script>
+  </body>
+</html>

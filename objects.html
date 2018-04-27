@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <script>
+      // Takeaway: Methods added to a constructor's prototype can INDEED be accessed on any instances of
+      // the constructor  even if method was added AFTER instance was created
+
+      // Advantage: The instance automatically updates so we don't have to keep track of when a method was added vs creation of instance
+
+      // NOTE: Do not return object {} in constructor because the object has no reference to the Constructor (like anonymous function)
+      // Assign methods to "this" keyword inside constructor
+
+      function TestObj() {
+        const localVal = '22';
+
+        this.callName = function(name) {
+          console.log(name, localVal);
+        };
+      }
+
+      const a = new TestObj();
+      a.callName('billy');
+
+      TestObj.prototype.sellName = function() {
+        console.log('i am selling my name');
+      }
+
+      const b = new TestObj();
+      b.callName();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <script type="text/javascript">
+      // fibonnaci
+      const doFibo = (startVal, times) => {
+        const fiboArray = [];
+        let counter = 0;
+
+        for (;counter < times;) {
+          if (counter === 0 || counter === 1) {
+            fiboArray.push(startVal);
+          } else {
+            const sum = fiboArray[counter - 2] + fiboArray[counter -1];
+
+            fiboArray.push(sum);
+          }
+          counter++;
+        }
+        return fiboArray;
+      }
+
+      doFibo(1, 10);
+    </script>
+  </body>
+</html>

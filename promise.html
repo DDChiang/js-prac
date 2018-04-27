@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <script>
+    // Understanding Promises
+    // 1. Rebuild Promise from scratch
+
+    new Promise((res, rej) => {
+      // do something
+      res();
+    })
+    .then(
+      res => {},
+      rej => {}
+    )
+    .catch(err => console.log(err))
+
+    class CustomPromise {
+      constructor(execFn) {
+        this.promiseChain = [];
+        this.handleError = () => {};
+
+        this.onResolve = this.onResolve.bind(this);
+        this.onReject = this.onReject.bind(this);
+
+        execFn(this.onResolve, this.onReject);
+      }
+
+      then(onResolve) {
+        this.promiseChain.push(onResolve);
+
+        return this;
+      }
+
+      catch(handleError) {
+        this.handleError = handleError;
+
+        return this;
+      }
+
+      onResolve(val) {
+        let storedVal = val;
+
+        try {
+          this.promiseChain.forEach((nextFn) => {
+            storedVal = nextFn(storedVal);
+          });
+        } catch (err) {
+          this.promiseChain = [];
+
+          this.onReject(err);
+        }
+      }
+
+      onReject(err) {
+        this.handleError(err);
+      }
+    }
+
+    // testing
+
+    const job1 = function(cb) {
+      setTimeout(function() { cb('first'); }, 900);
+    };
+    const job2 = function(cb) {
+      setTimeout(function() { cb('second'); }, 100);
+    };
+    const job3 = function(cb) {
+      setTimeout(function() { cb('third'); }, 300);
+    };
+
+    const jobs = [job1, job2, job3];
+    const callback = function(results) { console.log(results); return results; };
+
+    asyncMap(jobs, callback); // ["first", "second", "third"]
+
+    // Create Promise.all functionality from scratch
+    function asyncMap(arr, cb) {
+      const res = [];
+      let promise = Promise.resolve();
+
+      for (let item of arr) {
+        promise = promise
+          .then(() => item(cb))
+          .then(val => res.push(val));
+      }
+
+      return promise.then(() => {
+        console.log(res);
+        console.log(promise);
+        return res;
+      });
+    }
+
+    </script>
+  </body>
+</html>

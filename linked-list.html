@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <script>
+      // remove duplicates from an unsorted linked list
+      function LinkList() {
+        this.head = null;
+        this.tail = null;
+      }
+
+      function Node(val, prev, next) {
+        this.val = val;
+        this.prev = prev;
+        this.next = next;
+      }
+
+      LinkList.prototype.insert = function(val){
+        if (!this.head) {
+          const newNode = new Node(val, null, null);
+
+          this.head = newNode;
+          this.tail = newNode;
+          return;
+        }
+
+        const newNode = new Node(val, this.tail, null);
+
+        this.tail.next = newNode;
+        this.tail = newNode;
+      }
+
+      LinkList.prototype.remove = function(val) {
+        let currNode = this.head;
+
+        while (currNode) {
+          if (currNode.val === val) {
+
+            break;
+          }
+
+          currNode = currNode.next;
+        }
+      }
+
+      const myList = new LinkList();
+      myList.insert(2);
+      myList.insert(1);
+
+      console.log(myList);
+    </script>
+  </body>
+</html>

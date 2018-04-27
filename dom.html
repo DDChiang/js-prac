@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <div>
+      <!--First Challenge: Find sibling 2 doors down (rotation)-->
+      <ul id="list">
+        <li data-value=10>10</li>
+        <li data-value=20>20</li>
+        <li data-value=30>30</li>
+        <li data-value=40>40</li>
+      </ul>
+      <p>
+        Current:
+        <span id="answer-1"></span>
+      </p>
+      <p>
+        2 down:
+        <span id="answer-2"></span>
+      </p>
+      <script>
+        const listElem = document.getElementById('list');
+        const listItems = listElem.getElementsByTagName('li');
+        const answerBlock1 = document.getElementById('answer-1');
+        const answerBlock2 = document.getElementById('answer-2');
+        const siblingIncrement = 2;
+
+        const findElemIndex = (node, children) => {
+          const childrenLength = children.length;
+          let counter = 0;
+          let index;
+
+          for (;counter < childrenLength;) {
+            if (children[counter] === node) {
+              index = counter;
+              break;
+            }
+            counter++;
+          }
+
+          return index;
+        }
+
+        // add event listener to each list listItems
+        listElem.addEventListener('click', (e) => {
+          const targetElem = e.target;
+          if (targetElem.tagName === 'LI') {
+            answerBlock1.innerText = targetElem.textContent;
+            // display value from 2 siblings to the right
+            const firstLayerChildren = targetElem.parentNode.children;
+            const firstLayerChildrenLength = firstLayerChildren.length;
+            const targetElemIndex = findElemIndex(targetElem, firstLayerChildren);
+            // 3
+            // const actualIncrement = firstLayerChildrenLength % siblingIncrement; // only need this if siblingIncrement is larger than list length
+            const targetSiblingIndex = ((targetElemIndex + siblingIncrement) > firstLayerChildrenLength - 1)
+              ? targetElemIndex - (firstLayerChildrenLength - 1 - siblingIncrement) // where the combined "traversal" is larger
+              : targetElemIndex + siblingIncrement;
+
+            answerBlock2.innerText = targetSiblingIndex;
+          }
+        });
+
+        //// practice merge sort
+        var testArray = [7,6,5,4,3,2,1];
+
+        // Split the array into halves and merge them recursively
+        function mergeSort (arr) {
+          if (arr.length === 1) {
+            // return once we hit an array with a single item
+            return arr;
+          }
+
+          const middle = Math.floor(arr.length / 2); // get the middle item of the array rounded down
+          const left = mergeSort(arr.slice(0, middle)); // items on the left side
+          const right = mergeSort(arr.slice(middle)); // items on the right side
+
+         // by time we get to here, we're only comparing single values
+          return merge(
+            left,
+            right
+          );
+        }
+
+
+        // compare the arrays item by item and return the concatenated result
+        const merge = (left, right) => {
+          let result = []
+          let indexLeft = 0
+          let indexRight = 0
+
+          while (indexLeft < left.length && indexRight < right.length) {
+            if (left[indexLeft] < right[indexRight]) {
+              result.push(left[indexLeft])
+              indexLeft++
+            } else {
+              result.push(right[indexRight])
+              indexRight++
+            }
+          }
+
+          return result.concat(left.slice(indexLeft)).concat(right.slice(indexRight))
+        }
+
+        mergeSort(testArray);
+
+      </script>
+    </div>
+    <hr />
+    <div>
+      <!-- Find matching dom in identical tree-->
+      <div id="tree1">
+        <div></div>
+        <div>
+          <p>Another P</p>
+          <p>
+            <span>Hello</span>  
+          </p>
+        </div>
+      </div>
+      
+      <div id="tree2">
+        <div></div>
+        <div>
+          <p>Another P</p>
+          <p>
+            <span>Hello</span>  
+          </p>
+        </div>
+      </div>
+      <script>
+        // Highlight identical element from #tree1 to #tree2
+        
+        // 1. Select DOM if click on it
+        const tree1 = document.getElementById('tree1');
+        const tree2 = document.getElementById('tree2');
+        
+        function findMatchingNode(targetNode, origTree, newTreeId) {
+          const upwardMap = createUpwardMapping(targetNode, origTree);
+          
+          // Use upwardMap on New Tree
+          let newTree = document.getElementById(newTreeId);
+          let counter = upwardMap.length - 1;
+          
+          for (;counter >= 0;) {
+            const foundChild = newTree.children[upwardMap[counter]];
+            newTree = foundChild;
+            
+            counter--;
+          }
+          
+          console.log(newTree);
+        }
+        
+        /*
+        * Returns array of objects with mapping instructions
+        */
+        function createUpwardMapping(targetNode, origTree) {
+          const mapInstructionArray = [];
+          let targetElem = targetNode;
+          // find mapping within the first tree: 
+          // At each level: node index inside current level + parent (until you reach the top of tree)
+          while (targetElem.parentNode && targetElem !== origTree) {
+            const parentNode = targetElem.parentNode;
+            // find node index within current level
+            mapInstructionArray[mapInstructionArray.length] = findNodeIndex(targetElem, parentNode.children);
+            // set new target elem (1 layer up)
+            targetElem = parentNode;
+          }
+          
+          return mapInstructionArray;       
+        }
+        
+        function findNodeIndex(targetElem, childrenLayer) {
+          let counter = 0;
+          let childrenLength = childrenLayer.length;
+          
+          for (;counter < childrenLength;) {
+            if (childrenLayer[counter] === targetElem) {
+              break;              
+            } 
+            counter++;
+          }
+          
+          return counter;
+        }
+        
+        tree1.addEventListener('click', (e) => {
+          const targetElem = e.target;
+          e.stopPropagation();
+          
+          findMatchingNode(targetElem, tree1, 'tree2');
+        });
+        
+        tree2.addEventListener('click', (e) => {
+          const targetElem = e.target;
+          e.stopPropagation();
+          
+          findMatchingNode(targetElem, tree2, 'tree1');
+        });
+      </script>
+    </div>
+  </body>
+
+</html>
